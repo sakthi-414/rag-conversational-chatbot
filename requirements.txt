@@ -1,0 +1,12 @@
+langgraph
+langchain
+langchain_text_splitters
+langchain_community
+langchain_google_genai
+langchain_huggingface
+langchain_chroma
+chromadb
+pdfplumber
+streamlit
+python-dotenv
+pydantic
