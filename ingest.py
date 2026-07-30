@@ -3,7 +3,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
 import os
-from embedding import embed_model
+from embeddings import embed_model
 
 load_dotenv()
 

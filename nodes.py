@@ -7,7 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage,AIMessage,RemoveMessage
 from graph_state import RAGGraphState
-from embedding import embed_model
+from embeddings import embed_model
 
 load_dotenv()
 CHROMA_PATH="./chroma_db"

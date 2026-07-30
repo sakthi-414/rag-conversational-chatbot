@@ -8,6 +8,7 @@ __pycache__/
 .venv/
 venv/
 env/
+test-clone/
 
 # Vector store & uploaded data (local artifacts, not source)
 chroma_db/
