@@ -15,75 +15,53 @@ This project addresses each of those with a dedicated graph node instead of hopi
 ## Architecture
 
 ```
-                  PDF
+PDF
+ │
+ ▼
+PDF Loader
+ │
+ ▼
+Text Splitter
+ │
+ ▼
+Embeddings
+ │
+ ▼
+Chroma DB
+ │
+ ▼
+Streamlit ──► LangGraph
+                  │
+                  ▼
+           Input Guardrail
+                  │
+                  ▼
+           Query Rewriting
+                  │
+                  ▼
+              Retriever
+                  │
+                  ▼
+           Relevance Check
+                  │
+                  ▼
+          Answer Generator
+                  │
+                  ▼
+               Answer
+```
 
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;             PDF Loader
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;            Text Splitter
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;             Embeddings
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;              Chroma DB
-
-&#x20;                  │
-
-&#x20;                  │
-
-User ──► Streamlit ──► LangGraph
-
-&#x20;                        │
-
-&#x20;                 Input Guardrail
-
-&#x20;                        │
-
-&#x20;                 Query Rewriting
-
-&#x20;                        │
-
-&#x20;                    Retriever
-
-&#x20;                        │
-
-&#x20;                 Relevance Check
-
-&#x20;                        │
-
-&#x20;                  Answer Generator
-
-&#x20;                        │
-
-&#x20;                        ▼
-
-&#x20;                      Answer ```
-
-* **`input\\\_guardrail`** — blocks basic prompt-injection patterns before anything else runs.
-* **`rewrite\\\_question`** — rewrites follow-up questions into standalone queries using chat summary + recent history, so retrieval doesn't miss context-dependent questions.
+* **`input_guardrail`** — blocks basic prompt-injection patterns before anything else runs.
+* **`rewrite_question`** — rewrites follow-up questions into standalone queries using chat summary + recent history, so retrieval doesn't miss context-dependent questions.
 * **`retriever`** — similarity search against a Chroma vector store built from an uploaded PDF.
 * **`relevent`** — an LLM-as-judge node (structured output) that checks whether retrieved chunks actually contain enough info to answer, before generating anything.
-* **`generate\\\_answer`** — answers strictly from retrieved context; explicitly told to say "I don't know" rather than guess.
+* **`generate_answer`** — answers strictly from retrieved context; explicitly told to say "I don't know" rather than guess.
 * **`summary`** — once chat history passes a threshold, older messages are summarized and removed from the live context window (see [Memory management](#memory-management) below).
 * **`escalate`** — a safe fallback when the guardrail blocks a request or retrieval isn't good enough to answer from.
 
 ## Memory management
 
-Chat history is stored using LangGraph's `add\\\_messages` reducer, which **merges by message ID** rather than overwriting the list. That means trimming history isn't as simple as returning a shorter list — old messages have to be explicitly removed with `RemoveMessage`, or they never actually leave the state. Once history exceeds a threshold, the `summary` node folds older turns into a running summary (merged with the prior summary, not overwritten) and removes them from `chat\\\_history`, keeping only the most recent few turns verbatim. This keeps token usage roughly constant instead of growing linearly with conversation length.
+Chat history is stored using LangGraph's `add_messages` reducer, which **merges by message ID** rather than overwriting the list. That means trimming history isn't as simple as returning a shorter list — old messages have to be explicitly removed with `RemoveMessage`, or they never actually leave the state. Once history exceeds a threshold, the `summary` node folds older turns into a running summary (merged with the prior summary, not overwritten) and removes them from `chat_history`, keeping only the most recent few turns verbatim. This keeps token usage roughly constant instead of growing linearly with conversation length.
 
 ## Tech stack
 
@@ -99,7 +77,7 @@ Chat history is stored using LangGraph's `add\\\_messages` reducer, which **merg
 git clone https://github.com/sakthi-414/rag-conversational-chatbot.git
 cd rag-conversational-chatbot
 pip install -r requirements.txt
-cp .env.example .env   # then add your GEMINI\\\_API\\\_KEY
+cp .env.example .env   # then add your GEMINI_API_KEY
 streamlit run app1.py
 ```
 
@@ -128,17 +106,17 @@ Upload a PDF in the sidebar, click **Ingest**, then chat.
 
 </> Markdown
 
-\### Chatbot Interface
+## Chatbot Interface
 
 
 
-!\[Chatbot UI](assets/chatbot-ui.png)
+![Chatbot UI](./assets/chatbot-ui.png)
 
 
 
-\### Source Documents
+## Source Documents
 
 
 
-!\[Source Display](assets/source-display.png)
+![Source Display](./assets/source-display.png)
 
